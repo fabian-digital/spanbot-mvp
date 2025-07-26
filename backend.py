@@ -3,7 +3,7 @@ from langgraph.prebuilt import ToolNode, tools_condition
 from langchain_core.tools import tool
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, AIMessage, BaseMessage
-from langchain_community.tools.brave_search.tool import BraveSearch
+from langchain_community.tools.brave_search.tool import BraveSearch, BraveSearchWrapper
 from langchain_openai import ChatOpenAI
 from typing import List
 from dotenv import load_dotenv
@@ -28,11 +28,13 @@ BRAVE_SEARCH_API_KEY = os.environ.get("BRAVE_SEARCH_API_KEY")
 if BRAVE_SEARCH_API_KEY is None:
     raise ValueError("BRAVE_SEARCH_API_KEY is not set")
 
-# Define the web search tool
+# Define the baweb search tool
 @tool("web_search_tool")
-def web_search_tool(query: str) -> str:
+def web_search_tool(query: str, max_results: int = 5) -> str:
     """
     Search the web using Brave Search API
+    Use this tool when you need to search the web with basic parameters.
+    Answer in the same language as the one used by the human.
     
     Args:
         query: The search query string
@@ -42,23 +44,65 @@ def web_search_tool(query: str) -> str:
     """
     search = BraveSearch.from_api_key(
         api_key=BRAVE_SEARCH_API_KEY, 
-        search_kwargs={"count": 3}
+        search_kwargs={"count": min(max_results, 20)}
     )
-    return search.run(query)
+ 
+    result = search.run(query)
+    print("-" * 80)
+    print("Basic web search result:")
+    print("-" * 80)
+    pprint(result)
+    return result
+
+# Define the advanced web search tool
+@tool("advanced_web_search")
+def advanced_web_search(query: str, max_results: int = 5, country: str = "US", language: str = "en") -> str:
+    """
+    This tool searches the web with specific parameters.
+    Use this tool when you need to search the web in a specific country and/or language.
+    Answer in the same language as the one used by the human.
+    
+    Args:
+        query: Search query
+        max_results: Number of results to return (1-20)
+        country: Country code for localized results
+        language: Language code for localized results
+
+    Returns:
+        Formatted search results
+    """
+    
+    # Create wrapper with custom parameters
+    search_wrapper = BraveSearchWrapper(
+        api_key=BRAVE_SEARCH_API_KEY,
+        search_kwargs={
+            "count": min(max_results, 20),
+            "country": country,
+            "search_lang": language
+        }
+    )
+    
+    result = search_wrapper.run(query)
+    print("-" * 80)
+    pprint(search_wrapper.search_kwargs)
+    print("Advanced web search result:")
+    print("-" * 80)
+    pprint(result)
+    return result
+
 
 # Define the tools
-tools = [web_search_tool]
+tools = [web_search_tool, advanced_web_search]
 tool_node = ToolNode(tools=tools)
 
 # Define the LLM with tools
 #llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY)
-llm = ChatOpenAI(model="gpt-4o-mini", api_key=OPENAI_API_KEY)
+llm = ChatOpenAI(model="gpt-4.1-2025-04-14", api_key=OPENAI_API_KEY)
 llm_with_tools = llm.bind_tools(tools)
 
 # Define the LLM node
 def llm_node(state: MessagesState) -> MessagesState:
     response = llm_with_tools.invoke(state["messages"])
-    pprint(response)
     return {"messages": [response]}
 
 # Define the graph
