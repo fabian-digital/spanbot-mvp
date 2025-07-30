@@ -59,8 +59,15 @@ def web_search_tool(query: str, max_results: int = 5) -> str:
 def advanced_web_search(query: str, max_results: int = 5, country: str = "US", language: str = "en") -> str:
     """
     This tool searches the web with specific parameters.
-    Use this tool when you need to search the web in a specific country and/or language.
-    Answer in the same language as the one used by the human.
+    Use this tool when you need to search the web in a specific city, country and/or language.
+    For example: 
+     * use this tool to search in Paris, France, and search in French.
+     * use this tool to search in Paris, France, and search in English.
+     * use this tool to search in Paris, France, and search in Spanish.
+     * use this tool to search in Paris, France, and search in German.
+     * use this tool to search in Paris, France, and search in Italian.
+     * use this tool to search in Paris, France, and search in Portuguese.
+     * use this tool to search in Paris, France, and search in Russian.
     
     Args:
         query: Search query
@@ -97,7 +104,7 @@ tool_node = ToolNode(tools=tools)
 
 # Define the LLM with tools
 #llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY)
-llm = ChatOpenAI(model="gpt-4.1-2025-04-14", api_key=OPENAI_API_KEY)
+llm = ChatOpenAI(model="gpt-4o", api_key=OPENAI_API_KEY)
 llm_with_tools = llm.bind_tools(tools)
 
 # Define the LLM node
