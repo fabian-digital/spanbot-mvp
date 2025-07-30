@@ -62,12 +62,13 @@ def advanced_web_search(query: str, max_results: int = 5, country: str = "US", l
     Use this tool when you need to search the web in a specific city, country and/or language.
     For example: 
      * use this tool to search in Paris, France, and search in French.
-     * use this tool to search in Paris, France, and search in English.
-     * use this tool to search in Paris, France, and search in Spanish.
-     * use this tool to search in Paris, France, and search in German.
-     * use this tool to search in Paris, France, and search in Italian.
-     * use this tool to search in Paris, France, and search in Portuguese.
-     * use this tool to search in Paris, France, and search in Russian.
+     * use this tool to search in London, UK, and search in English.	
+     * use this tool to search in Madrid, Spain, and search in Spanish.
+     * use this tool to search in Berlin, Germany, and search in German.
+     * use this tool to search in Rome, Italy, and search in Italian.
+     * use this tool to search in Lisbon, Portugal, and search in Portuguese.
+     * use this tool to search in Moscow, Russia, and search in Russian.
+     * use this tool to search in Zurich, Switzerland, and search in German.
     
     Args:
         query: Search query
