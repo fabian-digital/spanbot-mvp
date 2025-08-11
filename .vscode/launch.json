@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "python": "/home/odoo/miniconda3/envs/spanbot-mvp/bin/python",
+            "env": {
+                "CONDA_DEFAULT_ENV": "spanbot-mvp"
+            }
+        },
+        {
+            "name": "Python: Streamlit App",
+            "type": "python",
+            "request": "launch",
+            "module": "streamlit",
+            "args": ["run", "main.py"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "python": "/home/odoo/miniconda3/envs/spanbot-mvp/bin/python",
+            "env": {
+                "CONDA_DEFAULT_ENV": "spanbot-mvp"
+            }
+        }
+    ]
+} 

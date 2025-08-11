@@ -2,11 +2,13 @@
     "python.defaultInterpreterPath": "/home/odoo/miniconda3/envs/spanbot-mvp/bin/python",
     "python.terminal.activateEnvironment": true,
     "python.terminal.activateEnvInCurrentTerminal": true,
-    "terminal.integrated.defaultProfile.linux": "conda-spanbot",
+    "terminal.integrated.defaultProfile.linux": "bash",
     "terminal.integrated.profiles.linux": {
-        "conda-spanbot": {
+        "bash": {
             "path": "/bin/bash",
-            "args": ["-c", "conda activate spanbot && exec bash"]
+            "args": []
         }
-    }
+    },
+    "python.condaPath": "/home/odoo/miniconda3/bin/conda",
+    "python.envFile": "${workspaceFolder}/.env"
 }
