@@ -9,29 +9,32 @@ from langchain_mistralai import ChatMistralAI
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_exa import ExaSearchResults
 from typing import List
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 import os
 from pprint import pprint
 
 
 # Load the environment variables
-load_dotenv()
+load_dotenv(find_dotenv(), override=True)
 
 # Get the API key
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-if GROQ_API_KEY is None:
-    raise ValueError("GROQ_API_KEY is not set")
+#GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+#if GROQ_API_KEY is None:
+#    raise ValueError("GROQ_API_KEY is not set")
 
 MISTRAL_API_KEY = os.environ.get("MISTRAL_API_KEY")
+print("MISTRAL_API_KEY", MISTRAL_API_KEY)
 if MISTRAL_API_KEY is None:
     raise ValueError("MISTRAL_API_KEY is not set")
 
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
-if OPENAI_API_KEY is None:
-    raise ValueError("OPENAI_API_KEY is not set")
+# OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+# print("OPENAI_API_KEY", OPENAI_API_KEY)
+# if OPENAI_API_KEY is None:
+#     raise ValueError("OPENAI_API_KEY is not set")
 
 # Get the Exa.ai API key
 EXA_API_KEY = os.environ.get("EXA_API_KEY")
+print("EXA_API_KEY", EXA_API_KEY)
 if EXA_API_KEY is None:
     raise ValueError("EXA_API_KEY is not set")
 
@@ -51,6 +54,7 @@ def web_search_tool(query: str, max_results: int = 5, user_location: str = "Belg
 	•	Job interview listings (linkedin, indeed, etc.)
     •	Local business directory (like yellow pages, yelp, etc.)
     •	Review platforms (google, yelp, etc.)
+    *   Rental companies (like rent event space, rent a car, rent a bike, etc.)
 
     Args:
         query: The search query string
@@ -81,7 +85,7 @@ tool_node = ToolNode(tools=tools)
 
 # Define the LLM with tools
 #llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY)
-#llm = ChatOpenAI(model="gpt-4o", api_key=OPENAI_API_KEY)
+#llm = ChatOpenAI(model="gpt-4", api_key=OPENAI_API_KEY)
 llm = ChatMistralAI(model="mistral-medium-latest", api_key=MISTRAL_API_KEY)
 llm_with_tools = llm.bind_tools(tools)
 
@@ -117,8 +121,12 @@ def llm_judge(response_content: str, user_query: str) -> dict:
     Returns:
         dict: {"compliant": bool, "violations": List[str], "score": float}
     """
-    judge_llm = ChatOpenAI(model="gpt-4o-mini", api_key=OPENAI_API_KEY, temperature=0)
-    
+    # Prefer OpenAI for judging when available, otherwise fall back to Mistral
+    # if OPENAI_API_KEY:
+    #     judge_llm = ChatOpenAI(model="gpt-5-mini", api_key=OPENAI_API_KEY, temperature=0)
+    # else:
+    #     judge_llm = ChatMistralAI(model="mistral-small-latest", api_key=MISTRAL_API_KEY, temperature=0)
+    judge_llm = ChatMistralAI(model="mistral-small-latest", api_key=MISTRAL_API_KEY, temperature=0)
     judge_prompt = f"""
 You are a compliance judge for a procurement assistant. Evaluate if the assistant's response follows these strict rules:
 

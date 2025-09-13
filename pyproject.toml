@@ -1,0 +1,16 @@
+[project]
+name = "spanbot-mvp"
+version = "0.1.0"
+description = "Spantech Procurement Assistant"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "langchain-community>=0.3.29",
+    "langchain-core>=0.3.75",
+    "langchain-exa>=0.3.0",
+    "langchain-groq>=0.3.7",
+    "langchain-mistralai>=0.2.11",
+    "langchain-openai>=0.3.32",
+    "langgraph>=0.6.7",
+    "streamlit>=1.49.1",
+]
