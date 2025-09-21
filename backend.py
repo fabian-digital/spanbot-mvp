@@ -85,7 +85,7 @@ tool_node = ToolNode(tools=tools)
 
 # Define the LLM with tools
 #llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=GROQ_API_KEY)
-#llm = ChatOpenAI(model="gpt-4", api_key=OPENAI_API_KEY)
+#llm = ChatOpenAI(model="gpt-4o", api_key=OPENAI_API_KEY)
 llm = ChatMistralAI(model="mistral-medium-latest", api_key=MISTRAL_API_KEY)
 llm_with_tools = llm.bind_tools(tools)
 
@@ -138,6 +138,7 @@ SYSTEM RULES:
 5. Do NOT search for: job offers, job applications, job descriptions, job interview listings, business directories, review platforms
 6. When searching in non-English speaking countries, search in local language but respond in the language of user_query
 7. For each company: provide name and clickable URL to official website
+8. Limit to 5 results
 
 USER QUERY: "{user_query}"
 
@@ -171,7 +172,12 @@ Respond only with a JSON object.
 # Run the conversation with thread_id and compliance checking
 def run_conversation(messages: List[BaseMessage], thread_id: str) -> BaseMessage:
     """Run the conversation through the graph and return the latest AI message."""
+    print("Running conversation with thread_id:", thread_id)
+    print("Messages:", messages)
+    print("-" * 80)
     response = graph.invoke({"messages": messages}, config={"configurable": {"thread_id": thread_id}})
+    print("Response:", response)
+    print("-" * 80)
 
     # Get the last message from the response
     last_message = response["messages"][-1]

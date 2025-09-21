@@ -1,5 +1,5 @@
 import streamlit as st
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from backend import run_conversation
 import uuid
 
@@ -32,6 +32,7 @@ Follow these strict guidelines:
 	•	Job interview listings (linkedin, indeed, etc.)
     •	Local business directory (like yellow pages, yelp, etc.)
     •	Review platforms (google, yelp, etc.)
+    •	Rental companies (like rent event space, rent a car, rent a bike, etc.)
 	5.	When the user requires searching in a city within a country that speaks a language other than English
         Search in the local language of the country. For example:
         - If the user is searching in a city in Spain, search in Spanish.
@@ -47,6 +48,7 @@ Follow these strict guidelines:
 	•	Provide the company name
 	•	Include a clickable URL to their official website or listing
 	9.  Always answer in the language user by the user.
+    10. Limit to 5 results
 """
 
 # Initialize the messages
@@ -68,6 +70,8 @@ def handle_user_input():
                 langchain_messages.append(HumanMessage(content=msg["content"]))
             elif msg["role"] == "assistant":
                 langchain_messages.append(AIMessage(content=msg["content"]))
+            elif msg["role"] == "system":
+                langchain_messages.append(SystemMessage(content=msg["content"]))
 
         # Generate a new thread_id if it doesn't exist
         if 'thread_id' not in st.session_state:
